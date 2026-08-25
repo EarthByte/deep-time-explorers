@@ -1,0 +1,31 @@
+# Python
+__pycache__/
+*.pyc
+
+# Logs from running export_data.py (gplately/pygplates internals)
+*.log
+
+# OS junk
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Manual cleanup staging -- moved here instead of deleted, per house rule;
+# never auto-deleted, never committed
+_to_delete/
+**/_to_delete/
+
+# Internal build output -- build_dte_v2.py (the dev/authoring script) writes
+# here for local testing only; the notebooks actually used and edited live
+# at the repo root
+notebooks_out/
+
+# Internal scoping/strategy notes -- names a specific collaborator and an
+# unconfirmed arrangement; private notes, not for the public repo
+STRATEGY_NOTES.md
+
+# Claude / AI-assistant working files -- never part of this repo
+CLAUDE.md
+.claude/
+_DUPLICATE_TO_DELETE/
