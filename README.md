@@ -1,5 +1,7 @@
 # Deep Time Explorers
 
+<p align="center"><img src="logo.png" alt="Deep Time Explorers -- AuScope and GPlates, topped with a graduation cap" width="360"></p>
+
 A **Year 4 (~9–10 years old)** spin-off of the main [GPlately + pyGMT tutorial
 suite](https://github.com/EarthByte/GPlately-pyGMT-tutorials), built around the same real EarthByte plate-reconstruction
 data — but with none of the install complexity. No pyGMT, no GPlately, no
@@ -222,6 +224,13 @@ Pyodide. This hasn't been built yet — flagged here so it isn't lost.
 | `data/notable_earthquakes.csv` | 3 | M ≥ 7.5 earthquakes since 1970 (USGS) with Robinson x/y, or a small static fallback |
 | `data/fossils_through_time.csv` | 6 | Boucot 2013 climate-sensitive lithology points, reconstructed with the same `scotese_and_wright2018` model as the basemap, at 6 ages, with climate bin + Robinson x/y |
 | `data/duck_path.csv` | 4 | The duck's ocean-only shortest-path route (Dijkstra over real PaleoDEM elevation, land excluded by construction) at 2 ages, with lat/lon + Robinson x/y per step |
+| `data/postcard_<town>_<age>Ma.png` | 5 | Whichever postcard(s) you generate by running Notebook 5 — saved alongside the rest of this suite's generated pictures rather than at the top level of the repo |
+
+## License
+
+The notebooks and scripts in this repository are released under the [MIT
+License](LICENSE). The underlying scientific datasets (below) are each
+under their original source's own terms, not this repository's license.
 
 ## Attribution
 
