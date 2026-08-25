@@ -29,3 +29,10 @@ STRATEGY_NOTES.md
 CLAUDE.md
 .claude/
 _DUPLICATE_TO_DELETE/
+
+# Local JupyterLite dev/test scaffolding -- the actual deployed site is
+# built fresh from the root notebooks + data/ by
+# .github/workflows/deploy-jupyterlite.yml, so none of this needs to be
+# (or should be) committed: the venv is a few hundred MB, dist/ is a ~90MB
+# rebuildable build artifact, and content/ is just a staging copy.
+jupyterlite_site/

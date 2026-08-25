@@ -1,0 +1,72 @@
+name: Deploy JupyterLite site
+
+# Builds the six Deep Time Explorers notebooks (+ their data/ folder) into a
+# static, zero-install JupyterLite site and publishes it to GitHub Pages.
+# Runs automatically on every push to main, and can also be triggered by
+# hand from the Actions tab.
+#
+# One-time setup this workflow depends on: Settings -> Pages -> Source ->
+# "GitHub Actions". Nothing else needs enabling.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deployment at a time; a newer push cancels an older, still-running
+# one rather than queueing behind it.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install JupyterLite
+        run: pip install jupyterlite-core jupyterlite-pyodide-kernel jupyterlab
+
+      - name: Assemble the site's content
+        # The root *.ipynb files are the real, canonical notebooks (the same
+        # ones a teacher opens in a normal Jupyter install) -- this just
+        # copies them, plus the data/ folder they read from, into a staging
+        # directory shaped the way `jupyter lite build` expects. Nothing here
+        # is hand-maintained: it's rebuilt fresh from the repo on every run,
+        # so there's no separate "JupyterLite copy" of the notebooks that
+        # could ever drift out of sync with the real ones.
+        run: |
+          mkdir -p _lite_src/data
+          cp *.ipynb _lite_src/
+          cp -r data/. _lite_src/data/
+
+      - name: Build the JupyterLite site
+        run: jupyter lite build --contents _lite_src --output-dir _site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

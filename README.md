@@ -199,14 +199,25 @@ a normal Jupyter install (`pip install ipywidgets` if it isn't already
 there). No conda environment, no GPlately, no cartopy, no internet
 connection needed.
 
-### Zero-install classroom delivery (not yet built)
+### Zero-install classroom delivery
 
-For an actual classroom rollout, the recommended next step is packaging
-these six notebooks as a static **[JupyterLite](https://jupyterlite.readthedocs.io/)**
-site (Pyodide-based — runs entirely in the browser, no installs, no
-accounts, works on a school Chromebook, can be hosted for free on GitHub
-Pages). `numpy`, `pandas`, `matplotlib` and `ipywidgets` all run under
-Pyodide. This hasn't been built yet — flagged here so it isn't lost.
+For an actual classroom rollout — a school Chromebook, no installs, no
+accounts — this suite is also packaged as a static
+**[JupyterLite](https://jupyterlite.readthedocs.io/)** site: the same six
+notebooks running entirely in the browser on **Pyodide** (a full Python
+interpreter compiled to WebAssembly). `numpy`, `pandas`, `matplotlib` and
+`ipywidgets` all run exactly as they do in a normal notebook — no server,
+no accounts, no local install, nothing to break.
+
+**[Try it online](https://earthbyte.github.io/deep-time-explorers/lab/index.html)**
+*(live once GitHub Pages is switched on for this repo — see below).*
+
+`.github/workflows/deploy-jupyterlite.yml` rebuilds and redeploys this site
+automatically on every push to `main`, straight from the same six root
+notebooks and the `data/` folder above — there's no separate hand-maintained
+copy of the notebooks to keep in sync. The only one-time step is turning
+Pages on: **Settings → Pages → Source: GitHub Actions**. After that the link
+above goes live and stays current automatically.
 
 ## Data files (generated, not hand-edited)
 
