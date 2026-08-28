@@ -1,5 +1,5 @@
 ---
-title: 'Deep Time Explorers: Zero-Install Jupyter Notebooks for Teaching Plate Tectonics to Primary School Students'
+title: 'Deep Time Explorers: Zero-Install Interactive Lessons for Teaching Plate Tectonics to Primary School Students'
 tags:
   - Earth science education
   - plate tectonics
@@ -11,20 +11,26 @@ authors:
   - name: R. Dietmar Müller
     orcid: 0000-0002-3334-5764
     affiliation: 1
+  - name: Alex Young
+    affiliation: 2
 affiliations:
   - name: EarthByte Group, School of Geosciences, University of Sydney, Australia
     index: 1
-date: 25 August 2026
+  - name: Austinmer Public School, New South Wales, Australia
+    index: 2
+date: 28 August 2026
 bibliography: paper.bib
 ---
 
 # Summary
 
-Deep Time Explorers is a suite of six self-contained Jupyter notebooks that
-introduces plate tectonics to Year 4 students (ages 9-10) using the same
-real, peer-reviewed deep-time reconstruction data that researchers use, with
-none of the software installation that normally stands in the way. Each
-notebook drives a single big idea through an interactive widget: a time
+Deep Time Explorers is a set of six short Earth science lessons for Year 4
+students (ages 9-10), each built around one real, interactive
+data visualization and delivered in two parallel forms: a self-contained
+Jupyter notebook, and a zero-dependency static web page. Both forms use the
+same real, peer-reviewed deep-time reconstruction data that researchers use,
+with none of the software installation that normally stands in the way. Each
+lesson drives a single big idea through an interactive control: a time
 slider that redraws the continents and their plate-velocity arrows over 300
 million years; a coastline "jigsaw" that lets students test Wegener's own
 evidence for continental drift; a map of real earthquakes plotted against
@@ -38,12 +44,14 @@ generated once from real EarthByte data products [@scotese2018paleodem;
 [@muller2018gplates; @mather2024gplately], then cached as plain image and
 CSV files. This means the student-facing notebooks depend only on `numpy`,
 `pandas`, `matplotlib`, and `ipywidgets` — no `gplately`, `pygplates`, or
-`cartopy` needs to be installed on a school computer. The suite is also
-packaged as a static JupyterLite site [@jupyterlite], so it runs entirely
-inside a web browser via Pyodide, with no installation or account of any
-kind, making it usable on a shared classroom Chromebook. Each notebook pairs
-its interactive figure with explanatory narrative text — a stated "mission"
-for the student, plot-language explanations of what the data actually shows,
+`cartopy` needs to be installed on a school computer — and are also packaged
+as a static JupyterLite site [@jupyterlite] that runs entirely inside a web
+browser via Pyodide. The six web-page "missions" go a step further: every
+map is pre-rendered and swapped by plain JavaScript, so there is no Python
+runtime in the browser at all, and they are the recommended entry point for
+a classroom (see Design and implementation). Each lesson pairs its
+interactive figure with explanatory narrative text — a stated "mission" for
+the student, plot-language explanations of what the data actually shows,
 and reflection questions — and the suite links explicitly to strands of the
 NSW Science and Technology K-6 syllabus and the Australian Curriculum v9.
 
@@ -75,11 +83,14 @@ software installed and a single lesson's worth of attention. Deep Time
 Explorers is that bridge: a teacher (or student, given a browser) needs no
 prior exposure to Python, Jupyter, or plate tectonics software, only a
 willingness to move a slider and look at a map. The project grew directly
-out of an existing classroom precedent — a Year 4 teacher and EarthByte
-alumnus already runs an ocean-current particle-tracking notebook with his
-own class — which suggested that a plate-tectonics sibling, built the same
-way, could occupy the same real-code, real-data, highly-visual niche for a
-different Earth science topic.
+out of an existing classroom precedent: co-author Alex Young, a Year 4
+teacher at Austinmer Public School and EarthByte alumnus, already runs an
+ocean-current particle-tracking notebook with his own class, which
+suggested that a plate-tectonics sibling, built the same way, could occupy
+the same real-code, real-data, highly-visual niche for a different Earth
+science topic. His review of an early, notebook-only prototype — described
+in Design and implementation below — went on to directly shape the suite's
+final delivery mechanism.
 
 # Learning objectives and instructional design
 
@@ -136,54 +147,77 @@ come from the same underlying plate model. Notebook 3's earthquake layer
 uses the public USGS earthquake catalog [@usgs_earthquake_catalog], and
 Notebook 6's fossil-climate layer uses the Boucot et al. (2013)
 climate-sensitive lithology compilation [@boucot2013climate], both
-reconstructed back through time with the same reconstruction machinery. A
-GitHub Actions workflow rebuilds and redeploys the JupyterLite site directly
-from the repository's six canonical notebooks and `data/` folder on every
-push, so there is no separate, hand-maintained "web copy" of the material
-that could drift out of sync with the notebooks a teacher would open
-locally.
+reconstructed back through time with the same reconstruction machinery.
+
+An early, notebook-only prototype was reviewed informally by co-author Alex
+Young ahead of any formal classroom trial. His feedback surfaced two
+independent problems with that delivery form. First, several of the
+JupyterLite-hosted sliders rendered once and then stopped responding to
+further input, consistent with a known, still-open upstream defect in how
+JupyterLite's Pyodide kernel maintains its comm channel with `ipywidgets`
+(jupyter-widgets/ipywidgets issue 3935). Second, and independent of that
+bug, a live Python notebook with visible code cells was judged too
+cognitively demanding for a Year 4 audience, and too hard for a classroom
+teacher without a Python background to troubleshoot when something did go
+wrong. Both problems share one root cause — a live, in-browser Python
+kernel driving the interactivity — so rather than patch around the widget
+bug, each notebook was rebuilt as a self-contained static HTML "mission"
+page: the same real reconstructions, narrative structure, and reflection
+questions, but with every map and dataset baked into the page ahead of time
+and the slider driven by plain JavaScript, so nothing depends on a Python
+kernel staying alive in the browser. A GitHub Actions workflow builds and
+redeploys both delivery forms together — the JupyterLite site and the six
+static mission pages — directly from the repository's canonical notebooks,
+mission pages, and `data/` folder on every push, so neither can drift out
+of sync with the other.
 
 # Future work and evaluation
 
-Deep Time Explorers has not yet been used with real students, and its most
-important open question is an empirical one: whether the design choices
-above actually build correct intuitions in a 9- or 10-year-old, rather than
-just providing an enjoyable slider to play with. A classroom pilot is
-planned with the Year 4 class whose teacher's existing ocean-current
-notebook inspired this project (see Statement of Need), using a short
-pre/post assessment — for example, asking students to sketch or describe
-where a named continent was at a given age, and why earthquakes happen where
-they do — alongside a teacher-facing survey covering lesson length,
-technical friction, and which of the six notebooks worked best in a single
-sitting. That feedback is expected to drive several likely follow-ups:
-broadening Notebook 6's climate categories with real reef-occurrence data
-from the Paleobiology Database, already used elsewhere in the parent
-GPlately-pyGMT tutorial suite, to give students a literal coral-reef icon
-rather than the closest available proxy; extending the plate-boundary
-overlay past its current 100 Ma resolution limit as higher-resolution
-deep-time topologies become available; and self-hosting the Pyodide runtime
-JupyterLite depends on, to remove the suite's one remaining reliance on an
-external CDN at load time. A successful pilot would also make it possible to
-describe this work in venues that specifically require classroom evidence,
-such as the *Journal of Geoscience Education*'s curriculum-and-instruction
-category, as a natural follow-on to this software-focused submission.
+Deep Time Explorers has not yet been used with students in a full lesson,
+and its most important open question remains empirical: whether the design
+choices above actually build correct intuitions in a 9- or 10-year-old,
+rather than just providing an enjoyable slider to play with. The informal
+review described above already functioned as a first, small-scale
+evaluation step and directly changed the software; a formal classroom pilot
+with co-author Alex Young's Year 4 class is the planned next step, using a
+short pre/post assessment — for example, asking students to sketch or
+describe where a named continent was at a given age, and why earthquakes
+happen where they do — alongside a teacher-facing survey covering lesson
+length, technical friction, and which of the six missions worked best in a
+single sitting. That feedback is expected to drive several likely
+follow-ups: broadening Notebook 6's climate categories with real
+reef-occurrence data from the Paleobiology Database, already used elsewhere
+in the parent GPlately-pyGMT tutorial suite, to give students a literal
+coral-reef icon rather than the closest available proxy; extending the
+plate-boundary overlay past its current 100 Ma resolution limit as
+higher-resolution deep-time topologies become available; and self-hosting
+the Pyodide runtime JupyterLite depends on, to remove the notebook lab's one
+remaining reliance on an external CDN at load time. A successful pilot
+would also make it possible to describe this work in venues that
+specifically require classroom evidence, such as the *Journal of Geoscience
+Education*'s curriculum-and-instruction category, as a natural follow-on to
+this software-focused submission.
 
 # AI-assisted development
 
 Generative AI (Claude, Anthropic) was used substantially throughout this
-project's development: drafting and iterating notebook code and narrative
-text, designing the project's logo, and assembling the JupyterLite
-deployment workflow, under the direction and review of the author, who
-verified all resulting figures, data provenance, and curriculum claims. No
-part of the underlying scientific data or plate reconstruction methodology
-was AI-generated; all reconstructions come from the same published data
-products and open-source EarthByte software cited above.
+project's development: drafting and iterating notebook and mission-page
+code and narrative text, designing the project's logo, and assembling the
+GitHub Actions deployment workflow, under the direction and review of the
+authors, who verified all resulting figures, data provenance, and
+curriculum claims. No part of the underlying scientific data or plate
+reconstruction methodology was AI-generated; all reconstructions come from
+the same published data products and open-source EarthByte software cited
+above.
 
 # Status and availability
 
-The source code, notebooks, and JupyterLite deployment are openly available
-under the MIT license at <https://github.com/EarthByte/deep-time-explorers>,
-with a live, browser-only version at
+The source code, notebooks, and both deployment forms are openly available
+under the MIT license at <https://github.com/EarthByte/deep-time-explorers>.
+The six mission web pages — the recommended classroom entry point — are
+live at <https://earthbyte.github.io/deep-time-explorers/missions/index.html>,
+with the underlying research notebooks available as a browser-only
+JupyterLite site at
 <https://earthbyte.github.io/deep-time-explorers/lab/index.html>.
 
 # Acknowledgements
