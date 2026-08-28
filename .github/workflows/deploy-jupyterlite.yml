@@ -1,7 +1,8 @@
-name: Deploy JupyterLite site
+name: Deploy site
 
 # Builds the six Deep Time Explorers notebooks (+ their data/ folder) into a
-# static, zero-install JupyterLite site and publishes it to GitHub Pages.
+# static, zero-install JupyterLite site at /lab/, adds the self-contained
+# mission web pages at /missions/, and publishes both to GitHub Pages.
 # Runs automatically on every push to main, and can also be triggered by
 # hand from the Actions tab.
 #
@@ -54,6 +55,15 @@ jobs:
 
       - name: Build the JupyterLite site
         run: jupyter lite build --contents _lite_src --output-dir _site
+
+      - name: Add the mission web pages
+        # The missions/ pages are self-contained static HTML (no build step
+        # of their own -- every map and dataset is baked in ahead of time),
+        # so this just copies them alongside the JupyterLite lab/ app in the
+        # published site, at /missions/.
+        run: |
+          mkdir -p _site/missions
+          cp missions/*.html _site/missions/
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5

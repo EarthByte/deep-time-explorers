@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Deep Time Explorers &mdash; Missions</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;700;800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean-deep: #0f3568;
+    --ocean-mid: #1c5aa0;
+    --ocean-pale: #dce9f7;
+    --land: #4f8f39;
+    --land-pale: #e9f4df;
+    --bg: #eef3f9;
+    --surface: #ffffff;
+    --surface-2: #e7eef8;
+    --text: #101d31;
+    --text-dim: #4d6480;
+    --border: #d4e0ee;
+    --accent: var(--ocean-mid);
+    --font-display: 'Bricolage Grotesque', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Atkinson Hyperlegible', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ocean-deep: #1a4d8f;
+      --ocean-mid: #4d8fd6;
+      --ocean-pale: #16283f;
+      --land: #7fc25c;
+      --land-pale: #16281c;
+      --bg: #0a1524;
+      --surface: #101f36;
+      --surface-2: #16283f;
+      --text: #e9eff8;
+      --text-dim: #92a7c4;
+      --border: #23384f;
+      --accent: var(--ocean-mid);
+    }
+  }
+  :root[data-theme="dark"] {
+    --ocean-deep: #1a4d8f;
+    --ocean-mid: #4d8fd6;
+    --ocean-pale: #16283f;
+    --land: #7fc25c;
+    --land-pale: #16281c;
+    --bg: #0a1524;
+    --surface: #101f36;
+    --surface-2: #16283f;
+    --text: #e9eff8;
+    --text-dim: #92a7c4;
+    --border: #23384f;
+    --accent: var(--ocean-mid);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    line-height: 1.55;
+  }
+  .page { max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 4rem; }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(2rem, 5vw, 2.8rem);
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0.3rem 0 0.7rem;
+    color: var(--text);
+  }
+  .tagline {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    max-width: 62ch;
+    margin: 0 0 0.6rem;
+  }
+  .status {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--ocean-deep);
+    background: var(--ocean-pale);
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    margin: 0.8rem 0 2.2rem;
+  }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .status { color: var(--ocean-mid); } }
+  :root[data-theme="dark"] .status { color: var(--ocean-mid); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 1rem;
+  }
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.2rem 1.3rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    border-color: var(--ocean-mid);
+    box-shadow: 0 8px 24px rgb(15 53 104 / 0.12);
+  }
+  .card .num {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .card h2 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text);
+  }
+  .card p {
+    font-size: 0.92rem;
+    color: var(--text-dim);
+    margin: 0;
+  }
+
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.88rem;
+    color: var(--text-dim);
+  }
+  footer a { color: var(--ocean-mid); }
+</style>
+</head>
+<body>
+<div class="page">
+  <span class="eyebrow">Deep Time Explorers</span>
+  <h1>Six missions through 410 million years</h1>
+  <p class="tagline">Real EarthByte plate-reconstruction data, turned into six short interactive missions for Year 4 explorers &mdash; no install, no code, nothing to run. Just pick one and drag the slider.</p>
+  <span class="status">Prototype &mdash; not yet classroom-tested</span>
+
+  <div class="grid">
+    <a class="card" href="01_Continents_on_the_Move.html">
+      <span class="num">Mission 1</span>
+      <h2>Continents on the Move</h2>
+      <p>Drag through 300 million years of real plate reconstructions.</p>
+    </a>
+    <a class="card" href="02_The_Jigsaw_Continents.html">
+      <span class="num">Mission 2</span>
+      <h2>The Jigsaw Continents</h2>
+      <p>Watch South America and Africa's coastlines fit back together.</p>
+    </a>
+    <a class="card" href="03_Where_the_Ground_Shakes.html">
+      <span class="num">Mission 3</span>
+      <h2>Where the Ground Shakes</h2>
+      <p>246 real earthquakes, switched on and off over today's plate boundaries.</p>
+    </a>
+    <a class="card" href="04_Follow_the_Duck_through_Deep_Time.html">
+      <span class="num">Mission 4</span>
+      <h2>Follow the Duck through Deep Time</h2>
+      <p>See how the Tasmanian Gateway opening changed an ocean route.</p>
+    </a>
+    <a class="card" href="05_Postcard_from_Deep_Time.html">
+      <span class="num">Mission 5</span>
+      <h2>Postcard from Deep Time</h2>
+      <p>Pick an Australian town and an age, get a postcard of where it used to sit.</p>
+    </a>
+    <a class="card" href="06_Fossil_Climate_Detectives.html">
+      <span class="num">Mission 6</span>
+      <h2>Fossil Climate Detectives</h2>
+      <p>Real rock and fossil climate clues, plotted across six deep-time ages.</p>
+    </a>
+  </div>
+
+  <footer>
+    <p>Built on the real reconstructions behind the <a href="https://github.com/EarthByte/GPlately-pyGMT-tutorials">GPlately + pyGMT tutorial suite</a>. Curious how it's built? The original research notebooks live in the <a href="../lab/index.html">zero-install notebook lab</a> and this project's <a href="https://github.com/EarthByte/deep-time-explorers">GitHub repository</a>, developed by the EarthByte Group, University of Sydney.</p>
+  </footer>
+</div>
+</body>
+</html>

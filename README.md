@@ -18,6 +18,36 @@ for a plate-tectonics sibling: same spirit (real code, real data, highly
 visual, age-appropriate), built around this repository's deep-time plate
 reconstructions instead.
 
+An early version of this ran as live Jupyter notebooks in the browser
+(JupyterLite, below) — which turned out to be too cognitively demanding
+for a primary-school audience, and a real ipywidgets/JupyterLite bug meant
+some sliders silently stopped updating. The missions below are the fix:
+the same real data and the same mission structure, with every map baked in
+ahead of time instead of computed live, so there's no code, no cells, and
+no kernel that can get stuck.
+
+## Try the missions
+
+Six short, self-contained web pages — pick one and start dragging the
+slider, nothing to install or run:
+
+**[→ Open the missions](https://earthbyte.github.io/deep-time-explorers/missions/index.html)**
+*(live once GitHub Pages is switched on for this repo — see 'Running it' below).*
+
+| # | Mission | Big idea |
+|---|---|---|
+| 1 | Continents on the Move | A time slider redraws the continents — real paleo-elevation, real plate boundaries, and real plate-velocity arrows — from 300 Ma to today |
+| 2 | The Jigsaw Continents | South America and Africa's coastlines fit together — Wegener's own evidence, plus a real mountain belt stitching them |
+| 3 | Where the Ground Shakes | 246 real earthquakes, switched on and off over today's real plate boundaries |
+| 4 | Follow the Duck through Deep Time | A simplified 'duck' journey shows how an ocean gateway opening changes the shortest sea route |
+| 5 | Postcard from Deep Time | Pick an Australian town and an age, get a postcard of where it used to sit |
+| 6 | Fossil Climate Detectives | Real fossil and rock climate clues — coal swamps, desert dunes, crocodile fossils — plotted through six deep-time ages |
+
+These are built straight from the same reconstructions as the six research
+notebooks below — same coordinates, same datasets, no separate simplified
+copy of the science. The notebooks stay as the citable, inspectable 'how
+it's built' layer; the missions are what a classroom actually opens.
+
 ## The six notebooks
 
 | # | Notebook | Big idea |
@@ -199,17 +229,22 @@ a normal Jupyter install (`pip install ipywidgets` if it isn't already
 there). No conda environment, no GPlately, no cartopy, no internet
 connection needed.
 
-### Zero-install classroom delivery
+### Zero-install notebook lab (the research layer, not the classroom one)
 
-For an actual classroom rollout — a school Chromebook, no installs, no
-accounts — this suite is also packaged as a static
+For anyone who wants to run the actual research notebooks in a browser —
+not the missions above, the real `ipywidgets`-driven notebooks — this
+suite is also packaged as a static
 **[JupyterLite](https://jupyterlite.readthedocs.io/)** site: the same six
 notebooks running entirely in the browser on **Pyodide** (a full Python
 interpreter compiled to WebAssembly). `numpy`, `pandas`, `matplotlib` and
 `ipywidgets` all run exactly as they do in a normal notebook — no server,
 no accounts, no local install, nothing to break.
 
-**[Try it online](https://earthbyte.github.io/deep-time-explorers/lab/index.html)**
+This is *not* the recommended path for a classroom — see 'Try the
+missions' above for that, and 'Why this exists' for why. It's here for
+anyone who wants to see, tweak, or re-run the real analysis code itself.
+
+**[Open the notebook lab](https://earthbyte.github.io/deep-time-explorers/lab/index.html)**
 *(live once GitHub Pages is switched on for this repo — see below).*
 
 `.github/workflows/deploy-jupyterlite.yml` rebuilds and redeploys this site
