@@ -1004,7 +1004,7 @@ DUCK_START_LONLAT = (60.0, -55.0)    # Indian Ocean, south of Africa -- (60,-50)
                                       # start point is pulled a bit further south to
                                       # stay in open ocean at every age this notebook uses
 DUCK_END_LONLAT = (-170.0, -50.0)    # South Pacific, south of New Zealand
-DUCK_AGES_MA = [60, 50, 40, 30, 20, 10, 0]  # widened from [60, 0] for the Mission 4 slider
+DUCK_AGES_MA = [60, 50, 15, 0]  # widened from [60, 0]; limited to ages with a registered PaleoDEM file (see PALEODEM_FILES)
 # Revision note: originally 50 Ma. The user flagged that Scotese & Wright's
 # own 50 Ma map already shows the Tasmanian Gateway just starting to open,
 # which undercuts a "mostly closed" story at that age. 60 Ma (Map15,
@@ -1160,9 +1160,10 @@ def main():
     for age in (0, 50, 100, 150, 200, 250, 300):
         render_basemap_regional(age, ATLANTIC_EXTENT, f"basemap_atlantic_{age}Ma.png", reconstruction_sw, model_sw,
                                  ATLANTIC_FIGSIZE, PLATE_CARREE)
-    # Widened from a 2-state (0/60 Ma) toggle to a full slider for Mission 4,
-    # at the same 10 Ma cadence as DUCK_AGES_MA below.
-    for age in (0, 10, 20, 30, 40, 50, 60):
+    # Widened from a 2-state (0/60 Ma) toggle to a slider for Mission 4.
+    # Limited to ages with a registered PaleoDEM file (see PALEODEM_FILES) --
+    # same set as DUCK_AGES_MA below.
+    for age in (0, 15, 50, 60):
         render_basemap_regional(age, SOUTHERN_OCEAN_EXTENT, f"basemap_southern_ocean_{age}Ma.png", reconstruction_sw, model_sw,
                                  SOUTHERN_OCEAN_FIGSIZE, SOUTHERN_OCEAN_PROJECTION)
 
