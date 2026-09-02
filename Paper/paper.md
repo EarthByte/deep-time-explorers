@@ -152,24 +152,32 @@ reconstructed back through time with the same reconstruction machinery.
 An early, notebook-only prototype was reviewed informally by co-author Alex
 Young ahead of any formal classroom trial. His feedback surfaced two
 independent problems with that delivery form. First, several of the
-JupyterLite-hosted sliders rendered once and then stopped responding to
-further input, consistent with a known, still-open upstream defect in how
-JupyterLite's Pyodide kernel maintains its comm channel with `ipywidgets`
-(jupyter-widgets/ipywidgets issue 3935). Second, and independent of that
-bug, a live Python notebook with visible code cells was judged too
-cognitively demanding for a Year 4 audience, and too hard for a classroom
-teacher without a Python background to troubleshoot when something did go
-wrong. Both problems share one root cause — a live, in-browser Python
-kernel driving the interactivity — so rather than patch around the widget
-bug, each notebook was rebuilt as a self-contained static HTML "mission"
-page: the same real reconstructions, narrative structure, and reflection
-questions, but with every map and dataset baked into the page ahead of time
-and the slider driven by plain JavaScript, so nothing depends on a Python
-kernel staying alive in the browser. A GitHub Actions workflow builds and
-redeploys both delivery forms together — the JupyterLite site and the six
-static mission pages — directly from the repository's canonical notebooks,
-mission pages, and `data/` folder on every push, so neither can drift out
-of sync with the other.
+JupyterLite-hosted sliders failed outright, raising
+`ModuleNotFoundError: No module named 'ipywidgets'` from the in-browser
+Pyodide kernel; inspecting the deployed build confirmed that `ipywidgets`
+is not among the packages this JupyterLite configuration pre-installs for
+offline use (only `ipykernel`, `piplite`, `pyodide-kernel`, and
+`widgetsnbextension` are bundled), so importing it depended on a live
+fetch from PyPI that is not guaranteed on every classroom network. Each
+notebook now explicitly requests it through JupyterLite's own `piplite`
+installer in its first code cell, guarded so the same cell is a no-op
+outside the browser. Second, and independent of that bug, a live Python
+notebook with visible code cells was judged too cognitively demanding for
+a Year 4 audience, and too hard for a classroom teacher without a Python
+background to troubleshoot when something did go wrong. That second
+problem — not the packaging gap above — is what motivated the suite's
+delivery mechanism itself: rather than lean further on a live, in-browser
+Python kernel, each notebook was rebuilt as a self-contained static HTML
+"mission" page: the same real reconstructions, narrative structure, and
+reflection questions, but with every map and dataset baked into the page
+ahead of time and the slider driven by plain JavaScript, so nothing
+depends on a Python kernel staying alive in the browser at all. The
+JupyterLite notebook lab remains available as a secondary, research-
+oriented delivery form alongside the missions. A GitHub Actions workflow
+builds and redeploys both delivery forms together — the JupyterLite site
+and the six static mission pages — directly from the repository's
+canonical notebooks, mission pages, and `data/` folder on every push, so
+neither can drift out of sync with the other.
 
 # Future work and evaluation
 
