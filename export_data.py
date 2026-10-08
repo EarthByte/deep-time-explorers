@@ -234,6 +234,18 @@ LITHO_KEY = {
 ROBINSON = ccrs.Robinson(central_longitude=0)
 PLATE_CARREE = ccrs.PlateCarree()
 
+# The Ring of Fire (the Pacific-rim subduction zones Notebook 3 asks
+# students to trace) straddles the +-180 seam of the standard
+# central_longitude=0 Robinson map, so it gets cut in two and shows up as
+# two separate arcs down the map's left and right edges instead of the one
+# continuous ring it actually is (flagged by a classroom reviewer testing
+# Notebook 3, v1.6). A Robinson projection recentred on the Pacific
+# (central_longitude=180) puts that seam over the Atlantic instead, where
+# Notebook 3 has no boundary line running through it, so nothing of
+# educational interest is lost. Used only by Notebook 3 -- every other
+# notebook keeps the standard ROBINSON above unchanged.
+ROBINSON_PACIFIC = ccrs.Robinson(central_longitude=180)
+
 # The Southern Ocean regional crop spans 240 degrees of longitude (-40 to
 # 200), which straddles the +-180 seam of a standard central_longitude=0
 # PlateCarree -- cartopy can't represent that as one flat rectangle and
@@ -318,6 +330,13 @@ def _calibrate_full_extent(figsize, ax_pos, projection, set_extent=None):
 # uses this exact tuple to place it with plain matplotlib imshow(extent=...).
 ROBINSON_EXTENT = _calibrate_full_extent(ROBINSON_FIGSIZE, AX_POS, ROBINSON)
 
+# Same idea, for Notebook 3's Pacific-recentred map (see ROBINSON_PACIFIC
+# above). A Robinson map's true extent depends only on the projection's
+# shape, not its central longitude, so this comes out numerically identical
+# to ROBINSON_EXTENT -- calibrated separately anyway, in case that ever
+# stops being true for a future cartopy version, rather than assumed.
+ROBINSON_PACIFIC_EXTENT = _calibrate_full_extent(ROBINSON_FIGSIZE, AX_POS, ROBINSON_PACIFIC)
+
 # Same idea for the two regional (PlateCarree) crops. build_dte_v2.py reads
 # these two constants at BUILD time (not runtime) and bakes the numbers
 # straight into the relevant notebook cells, so the shipped notebooks can
@@ -371,6 +390,18 @@ def project_to_robinson(lons, lats):
     lons = np.asarray(lons, dtype=float)
     lats = np.asarray(lats, dtype=float)
     xy = np.array([ROBINSON.transform_point(lo, la, PLATE_CARREE) for lo, la in zip(lons, lats)])
+    if len(xy) == 0:
+        return np.array([]), np.array([])
+    return xy[:, 0], xy[:, 1]
+
+
+def project_to_robinson_pacific(lons, lats):
+    """Same as project_to_robinson, but using ROBINSON_PACIFIC (Notebook 3's
+    Ring-of-Fire map) -- so overlays line up with a
+    data/basemap_pacific_0Ma.png loaded via imshow(extent=ROBINSON_PACIFIC_EXTENT)."""
+    lons = np.asarray(lons, dtype=float)
+    lats = np.asarray(lats, dtype=float)
+    xy = np.array([ROBINSON_PACIFIC.transform_point(lo, la, PLATE_CARREE) for lo, la in zip(lons, lats)])
     if len(xy) == 0:
         return np.array([]), np.array([])
     return xy[:, 0], xy[:, 1]
@@ -476,6 +507,50 @@ def render_basemap_robinson(age, reconstruction, model):
     # NO bbox_inches="tight" -- a fixed axes box (AX_POS) + full, uncropped
     # save is what makes ROBINSON_EXTENT a valid constant for every image.
     # See the "Fixed-crop calibration" comment near ROBINSON_EXTENT above.
+    fig.savefig(out_path, dpi=130)
+    plt.close(fig)
+    print(f"  wrote {out_path.name}")
+
+
+def render_basemap_robinson_pacific(age, reconstruction, model):
+    """Same real bathymetry+topography, plate-boundary Robinson map as
+    render_basemap_robinson, but drawn on ROBINSON_PACIFIC (recentred on the
+    Pacific) so the Ring of Fire reads as one continuous ring instead of
+    being split across the map's left/right edges -> data/basemap_pacific_
+    <age>Ma.png. Added for Notebook 3 (v1.6); see the ROBINSON_PACIFIC
+    comment above for why. Only ever called for age=0 -- Notebook 3 has no
+    time slider, it only ever shows "today".
+
+    `reconstruction`/`model` must be the Scotese & Wright (2018) model, same
+    reasoning as render_basemap_robinson."""
+    nc_path = _require_paleodem(age)
+    ds = xr.open_dataset(nc_path)
+    z = ds["z"].values
+    lons, lats = ds["lon"].values, ds["lat"].values
+
+    gplot = gplately.PlotTopologies(
+        plate_reconstruction=reconstruction,
+        continents=model.get_continental_polygons(),
+        COBs=model.get_COBs(),
+        time=float(age),
+    )
+
+    fig = plt.figure(figsize=ROBINSON_FIGSIZE)
+    ax = fig.add_axes(AX_POS, projection=ROBINSON_PACIFIC)
+    ax.set_global()
+    ax.pcolormesh(lons, lats, z, transform=PLATE_CARREE, cmap=EARTH_CMAP,
+                  vmin=EARTH_VMIN, vmax=EARTH_VMAX, shading="auto")
+    gplot.plot_continents(ax, facecolor="none", edgecolor="0.15", linewidth=0.35)
+    if age <= BOUNDARY_MAX_AGE_SW:
+        _plot_plate_boundaries(ax, gplot)
+    else:
+        print(f"    (no plate-boundary topology beyond {BOUNDARY_MAX_AGE_SW} Ma in this model -- "
+              f"coastline only at {age} Ma)")
+    gl = ax.gridlines(draw_labels=True, linewidth=0.4, color="black", alpha=0.35, linestyle="--")
+    gl.top_labels = False
+    gl.right_labels = False
+    out_path = OUT_DIR / f"basemap_pacific_{age}Ma.png"
+    # NO bbox_inches="tight" -- see the comment in render_basemap_robinson.
     fig.savefig(out_path, dpi=130)
     plt.close(fig)
     print(f"  wrote {out_path.name}")
@@ -784,6 +859,11 @@ def export_earthquakes():
     rx, ry = project_to_robinson(lons, lats)
     for r, x, y in zip(rows, rx, ry):
         r["robinson_x"], r["robinson_y"] = x, y
+    # Also pre-project onto Notebook 3's Ring-of-Fire map (ROBINSON_PACIFIC)
+    # -- extra columns, doesn't touch anything the standard map uses.
+    rpx, rpy = project_to_robinson_pacific(lons, lats)
+    for r, x, y in zip(rows, rpx, rpy):
+        r["robinson_pacific_x"], r["robinson_pacific_y"] = x, y
 
     out_path = OUT_DIR / "notable_earthquakes.csv"
     pd.DataFrame(rows).to_csv(out_path, index=False)
@@ -1148,6 +1228,9 @@ def main():
 
     print("\nRendering the subduction-zones-only basemap for Notebook 3 ...")
     render_basemap_subduction_only(0, reconstruction_sw, model_sw)
+
+    print("\nRendering the Pacific-centred (Ring of Fire) basemap for Notebook 3 ...")
+    render_basemap_robinson_pacific(0, reconstruction_sw, model_sw)
 
     print("\nRendering plate-velocity vector maps for Notebook 1 (Zahirovic2022 -- needs topology "
           "coverage the Scotese & Wright model doesn't have beyond 100 Ma) ...")

@@ -1,0 +1,272 @@
+<title>Where the Ground Shakes</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+__SHARED_HEAD__
+<style>
+  .quake-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+  }
+  .quake-layer.is-visible { opacity: 1; pointer-events: auto; }
+  .quake-dot {
+    position: absolute;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #101d31;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.35);
+    transform: translate(-50%, -50%);
+    cursor: default;
+  }
+  .quake-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 0;
+  }
+  .quake-legend-sample {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-dim);
+  }
+  .quake-legend-dot {
+    display: inline-block;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid #101d31;
+    flex-shrink: 0;
+  }
+  .quake-legend-note {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    max-width: 40ch;
+  }
+  .quake-dot {
+    -webkit-tap-highlight-color: transparent;
+  }
+  .quake-dot:focus-visible {
+    outline: 2px solid #ffd23f;
+    outline-offset: 2px;
+  }
+  .quake-tooltip {
+    position: absolute;
+    z-index: 5;
+    transform: translate(-50%, 0);
+    background: #101d31;
+    color: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    line-height: 1.35;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.35);
+    pointer-events: none;
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+  }
+  .quake-tooltip.is-visible { opacity: 1; }
+  .quake-tooltip::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 8px;
+    height: 8px;
+    background: inherit;
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+  .quake-tooltip.above { bottom: calc(100% + 9px); }
+  .quake-tooltip.above::after { top: 100%; }
+  .quake-tooltip.below { top: calc(100% + 9px); }
+  .quake-tooltip.below::after { bottom: 100%; }
+</style>
+
+<div class="page">
+
+  <header class="mission-header">
+    <div class="mission-meta">
+      <span class="eyebrow">Deep Time Explorers</span>
+      <span class="mission-chip">Mission 3 of 6</span>
+    </div>
+    <h1 class="mission-title">Where the Ground Shakes</h1>
+    <p class="mission-tagline">Why do earthquakes and volcanoes happen in the same places, over and over?</p>
+    <div class="mission-brief">
+      <p><strong>Your mission:</strong> plot real earthquakes on the map and see whether they cluster along the plate boundary lines you learned about in Mission 1, or scatter randomly everywhere.</p>
+      <p>Earthquakes and volcanoes aren&rsquo;t scattered randomly around the world &mdash; most of them happen in narrow bands that trace out the edges of Earth&rsquo;s plates. The background map already has the real plate boundaries drawn on it (red = spreading ridge, orange = transform, thick dark-blue line = subduction zone). Switch on the earthquakes and see the pattern for yourself.</p>
+    </div>
+  </header>
+
+  <section class="console" aria-label="Compare boundaries with earthquakes">
+    <div class="view-toggle" role="group" aria-label="Choose a view">
+      <button type="button" id="btn-boundaries" aria-pressed="true">Just the boundaries</button>
+      <button type="button" id="btn-quakes" aria-pressed="false">Add the earthquakes</button>
+    </div>
+
+    <div class="map-frame">
+      <span class="map-caption" id="map-caption">Today &mdash; real plate boundaries</span>
+      <img id="img-base" alt="Today's world map with real plate boundaries drawn on">
+      <div class="quake-layer" id="quake-layer" aria-hidden="true"></div>
+      <div class="quake-tooltip" id="quake-tooltip" role="status" hidden></div>
+    </div>
+
+    <div class="quake-legend" id="quake-legend" hidden>
+      <span class="quake-legend-sample"><span class="quake-legend-dot" style="width:7px;height:7px;"></span>M7.5</span>
+      <span class="quake-legend-sample"><span class="quake-legend-dot" style="width:14px;height:14px;"></span>M8.3</span>
+      <span class="quake-legend-sample"><span class="quake-legend-dot" style="width:22px;height:22px;"></span>M9.1</span>
+      <span class="quake-legend-note">246 real earthquakes, magnitude 7.5+, recorded by the US Geological Survey since 1970. Bigger dot = bigger quake.</span>
+    </div>
+  </section>
+
+  <section class="field-log">
+    <div class="log-entry">
+      <h2>What makes an earthquake &ldquo;notable&rdquo; here?</h2>
+      <p>Earthquakes happen somewhere on Earth almost every day &mdash; most far too small to feel. The dots on this map are only the <em>big</em> ones: <strong>magnitude 7.5 or higher, going back to 1970</strong> &mdash; real events recorded by scientists, not made-up data. That&rsquo;s why there are only a couple of hundred dots, not thousands.</p>
+      <p>(Magnitude is the scale scientists use for how strong an earthquake is. It jumps fast: each whole number up is about 32 times more energy, so a magnitude 8 earthquake releases roughly 32&times; what a magnitude 7 does.)</p>
+    </div>
+
+    <div class="log-entry">
+      <h2>What do you notice?</h2>
+      <p>Look at where the dots cluster. Do they scatter evenly across the continents and oceans, or do they hug the coloured boundary lines? Are there more dots &mdash; and bigger ones &mdash; near the dark-blue subduction lines, or the red ridge lines?</p>
+      <p>This is one of the strongest pieces of evidence for plate tectonics: earthquakes and volcanoes happen where plates push into each other, pull apart, or grind past one another &mdash; not randomly. Subduction zones (where one plate dives beneath another) produce the biggest and deepest earthquakes of all, which is exactly why the &ldquo;Ring of Fire&rdquo; around the Pacific is both a subduction-zone map <em>and</em> an earthquake map.</p>
+    </div>
+
+    <div class="prompts">
+      <h2>Try it yourself</h2>
+      <ul>
+        <li>Zoom in (with your browser&rsquo;s zoom) on the &ldquo;Ring of Fire&rdquo; around the Pacific Ocean &mdash; how many quakes can you count hugging the dark-blue subduction line, compared to the red ridge line?</li>
+        <li>Hover or tap a dot to see exactly where and when that earthquake happened.</li>
+        <li>Find the biggest dot on the whole map &mdash; where was it, and roughly how many times more energy did it release than the smallest dots here?</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p><strong>Mission 3 of 6, prototype.</strong> Every earthquake dot is a real, recorded USGS event &mdash; nothing here is simulated.</p>
+    <p>Part of <strong>Deep Time Explorers</strong>, a Year 4 spin-off of the <a href="https://github.com/EarthByte/GPlately-pyGMT-tutorials">GPlately + pyGMT tutorial suite</a>, developed by the EarthByte Group, University of Sydney &mdash; prototype stage, not yet classroom-tested.</p>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var IMG_BASE = "__IMG_BASE__";
+  var QUAKES = __QUAKES_DATA__;
+
+  var els = {
+    img: document.getElementById("img-base"),
+    caption: document.getElementById("map-caption"),
+    layer: document.getElementById("quake-layer"),
+    legend: document.getElementById("quake-legend"),
+    btnBoundaries: document.getElementById("btn-boundaries"),
+    btnQuakes: document.getElementById("btn-quakes"),
+    frame: document.querySelector(".map-frame"),
+    tooltip: document.getElementById("quake-tooltip"),
+  };
+
+  var magMin = Math.min.apply(null, QUAKES.map(function (q) { return q.mag; }));
+  var magMax = Math.max.apply(null, QUAKES.map(function (q) { return q.mag; }));
+  var magRange = magMax - magMin;
+
+  function diameter(mag) {
+    var norm = magRange > 0 ? (mag - magMin) / magRange : 0;
+    return 6 + Math.pow(norm, 1.3) * 17;
+  }
+
+  // Native `title` tooltips never fire on tap (touch devices ignore them
+  // entirely) and are sluggish even on desktop, which is why "hover or tap
+  // a dot" didn't actually show anything. This builds a real on-screen
+  // tooltip instead, shown on hover, tap/click, and keyboard focus alike.
+  var activeDot = null;
+
+  function positionTooltip(dot) {
+    var frameRect = els.frame.getBoundingClientRect();
+    var dotRect = dot.getBoundingClientRect();
+    var left = dotRect.left + dotRect.width / 2 - frameRect.left;
+    var top = dotRect.top - frameRect.top;
+    var showBelow = top < 60; // near the top edge -- flip the tooltip below the dot instead
+    els.tooltip.classList.toggle("above", !showBelow);
+    els.tooltip.classList.toggle("below", showBelow);
+    left = Math.max(40, Math.min(left, frameRect.width - 40));
+    els.tooltip.style.left = left + "px";
+    els.tooltip.style.top = (showBelow ? top + dotRect.height : top) + "px";
+  }
+
+  function showTooltip(dot) {
+    activeDot = dot;
+    els.tooltip.textContent = dot.dataset.info;
+    els.tooltip.hidden = false;
+    positionTooltip(dot);
+    // Two rAFs: one lets `hidden` clear and layout settle, the next
+    // triggers the CSS opacity transition on a clean state.
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () { els.tooltip.classList.add("is-visible"); });
+    });
+  }
+
+  function hideTooltip() {
+    activeDot = null;
+    els.tooltip.classList.remove("is-visible");
+    els.tooltip.hidden = true;
+  }
+
+  function buildDots() {
+    var frag = document.createDocumentFragment();
+    QUAKES.forEach(function (q) {
+      var d = diameter(q.mag);
+      var dot = document.createElement("div");
+      dot.className = "quake-dot";
+      dot.style.left = q.x + "%";
+      dot.style.top = q.y + "%";
+      dot.style.width = d + "px";
+      dot.style.height = d + "px";
+      dot.tabIndex = 0;
+      dot.setAttribute("role", "button");
+      dot.dataset.info = q.place + " — M" + q.mag.toFixed(1) + ", " + q.year;
+      dot.setAttribute("aria-label", dot.dataset.info);
+      dot.addEventListener("mouseenter", function () { showTooltip(dot); });
+      dot.addEventListener("mouseleave", function () { if (activeDot === dot) hideTooltip(); });
+      dot.addEventListener("focus", function () { showTooltip(dot); });
+      dot.addEventListener("blur", function () { if (activeDot === dot) hideTooltip(); });
+      dot.addEventListener("click", function (e) {
+        e.stopPropagation();
+        if (activeDot === dot) { hideTooltip(); } else { showTooltip(dot); }
+      });
+      frag.appendChild(dot);
+    });
+    els.layer.appendChild(frag);
+  }
+
+  // Tapping anywhere else on the page (including the map itself, off a
+  // dot) closes an open tooltip -- otherwise a tapped tooltip would stick
+  // around on a touch device with no hover state to clear it.
+  document.addEventListener("click", function () { if (activeDot) hideTooltip(); });
+
+  function show(mode) {
+    var onQuakes = mode === "quakes";
+    if (!onQuakes) hideTooltip();
+    els.layer.classList.toggle("is-visible", onQuakes);
+    els.layer.setAttribute("aria-hidden", String(!onQuakes));
+    els.legend.hidden = !onQuakes;
+    els.caption.textContent = onQuakes
+      ? "Today — 246 earthquakes"
+      : "Today — plate boundaries";
+    els.btnBoundaries.setAttribute("aria-pressed", String(!onQuakes));
+    els.btnQuakes.setAttribute("aria-pressed", String(onQuakes));
+  }
+
+  els.btnBoundaries.addEventListener("click", function () { show("boundaries"); });
+  els.btnQuakes.addEventListener("click", function () { show("quakes"); });
+
+  els.img.src = IMG_BASE;
+  els.img.classList.add("is-visible");
+  buildDots();
+  show("boundaries");
+})();
+</script>
