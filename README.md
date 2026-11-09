@@ -114,7 +114,7 @@ from-scratch reimplementation:
   a real speed to check against, and every age uses the same arrow scale,
   so lengths are directly comparable across the whole time slider.
 - Notebook 6's fossil "climate clues" are drawn as **hand-made picture icons**
-  (a coal-forest conifer, a palm tree, a crocodile, a desert dune — plus a
+  (a coal-forest conifer, a sun behind a rain cloud, a crocodile, a desert dune — plus a
   snowflake, defined but switched off by default, see below) built entirely
   from `matplotlib` shapes — no image files, no fonts, no internet
   connection needed, and they render identically on every computer. The
@@ -148,6 +148,10 @@ worth knowing:
   the six ages, 2–5 at the rest — but it stays switched on since a
   reflection question is already built around it; see the redrawn
   `draw_crocodile` note just below.)
+- **Warm, rainy weathering (bauxite, laterite, kaolinite, ironstone) is drawn
+  as a sun behind a rain cloud**, the weather that made those rocks. Palm
+  fossils are themselves one of Boucot's clues and sit in the crocodile
+  ("warm temperate") group, so a palm-tree icon is not used for this group.
 - **The crocodile icon has a jagged back ridge and a visible jaw line** —
   the features that read most clearly as "crocodile" rather than a generic
   shape at small size — with the eye placed at the head end.
