@@ -132,7 +132,7 @@ worth knowing:
 
 - **There's no literal "coral" category.** Boucot's categories don't include
   coral reefs, so Notebook 6 doesn't have a coral icon — the crocodile icon
-  (his "warm temperate" group, which also covers palms and mangroves) is the
+  (his frost-free group, which also covers palms and mangroves) is the
   closest real match to "warm and wet." Real coral/reef occurrence data does
   exist in the main suite (see `T57_Reef_Builders_Paleolatitude.ipynb` and
   `T60_PBDB_Paleobiogeography.ipynb`, both PBDB-sourced) — folding that in as
@@ -144,14 +144,18 @@ worth knowing:
   snowflake had little visual context to land on. `draw_snowflake` is still
   defined in the notebook; "Try this next!" invites kids to add
   `"cold": draw_snowflake` back into `CLIMATE_ICON` themselves. (The
-  "warm temperate"/crocodile bin is similarly rare — 0 points at three of
+  frost-free/crocodile bin is similarly rare — 0 points at three of
   the six ages, 2–5 at the rest — but it stays switched on since a
   reflection question is already built around it; see the redrawn
   `draw_crocodile` note just below.)
 - **Warm, rainy weathering (bauxite, laterite, kaolinite, ironstone) is drawn
-  as a sun behind a rain cloud**, the weather that made those rocks. Palm
+  as a yellow sun behind a dark rain cloud**, the weather that made those rocks. Palm
   fossils are themselves one of Boucot's clues and sit in the crocodile
-  ("warm temperate") group, so a palm-tree icon is not used for this group.
+  (frost-free) group, so a palm-tree icon is not used for this group.
+- **Icon colours are picked to stand out from the basemap.** The desert icon has
+  red-orange dunes and the rain cloud is dark slate, because tan or light grey
+  icons disappear against the tan lowlands and brown mountains of the
+  paleo-elevation map.
 - **The crocodile icon has a jagged back ridge and a visible jaw line** —
   the features that read most clearly as "crocodile" rather than a generic
   shape at small size — with the eye placed at the head end.
